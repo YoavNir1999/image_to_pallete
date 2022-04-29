@@ -5,6 +5,7 @@ use parse_text::*;
 mod dir;
 use dir::*;
 use std::io::prelude::*;
+use rayon::iter::*;
 
 fn main() {
     //parse config
@@ -15,19 +16,21 @@ fn main() {
     let percent : f64 = settings[1].clone().parse().unwrap();
     let scheme : Vec<[u8;3]> = hexes_to_scheme(settings[4..].to_vec());
     let files = return_files(&format!("{dir}/files/"));
-    let files = files.iter().filter(|x| (return_file_ext(x)=="jpg" || return_file_ext(x)=="png" || return_file_ext(x)=="jpeg"));
+    let files : Vec<&String> = files.iter().filter(|x| (return_file_ext(x)=="jpg" || return_file_ext(x)=="png" || return_file_ext(x)=="jpeg")).collect();
 
     // open image
-    for file in files {
-        let mut image = image::open(file).unwrap().into_rgb8();
+    files.par_iter().for_each(|x| convert(x,&scheme,&percent));
+    
+}
+
+fn convert(file:&String,scheme: &Vec<[u8;3]>, percent:&f64) {
+    let mut image = image::open(file).unwrap().into_rgb8();
 
         // convert image
         for pixel in image.pixels_mut() {
-            *pixel = Rgb(pixel_to_scheme(&scheme,&[pixel[0],pixel[1],pixel[2]],percent))
+            *pixel = Rgb(pixel_to_scheme(&scheme,&[pixel[0],pixel[1],pixel[2]],*percent))
         }
         image.save(format!("{}_converted.png",return_file_name(&file))).unwrap();
-    }
-    
 }
 
 fn pixel_to_scheme(scheme:&Vec<[u8;3]>,pixel:&[u8;3],percent:f64) -> [u8;3] {
