@@ -15,7 +15,7 @@ fn main() {
     let percent : f64 = settings[1].clone().parse().unwrap();
     let scheme : Vec<[u8;3]> = hexes_to_scheme(settings[4..].to_vec());
     let files = return_files(&format!("{dir}/files/"));
-    let files = files.iter().filter(|x| (return_file_ext(x)=="jpg" || return_file_ext(x)=="png"));
+    let files = files.iter().filter(|x| (return_file_ext(x)=="jpg" || return_file_ext(x)=="png" || return_file_ext(x)=="jpeg"));
 
     // open image
     for file in files {
