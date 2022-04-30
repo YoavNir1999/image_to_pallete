@@ -18,7 +18,7 @@ fn main() {
     let files = return_files(&format!("{dir}/files/"));
     let files : Vec<&String> = files.iter().filter(|x| (return_file_ext(x)=="jpg" || return_file_ext(x)=="png" || return_file_ext(x)=="jpeg")).collect();
 
-    // open image
+    // convert images in parallel
     files.par_iter().for_each(|x| convert(x,&scheme,&percent));
     
 }
@@ -48,8 +48,10 @@ fn hexes_to_scheme(hexes:Vec<String>) -> Vec<[u8;3]> {
     let mut res = Vec::new();
     let mut temp_arr = [0_u8;3];
     for hex in hexes {
-        decode_to_slice(&hex[1..],&mut temp_arr).unwrap();
-        res.push(temp_arr.clone())
+        if !hex.is_empty() {
+            decode_to_slice(&hex[1..],&mut temp_arr).unwrap();
+            res.push(temp_arr.clone())
+        }
     }
     return res
 }
