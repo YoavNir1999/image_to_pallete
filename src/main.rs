@@ -6,12 +6,16 @@ mod dir;
 use dir::*;
 use std::io::prelude::*;
 use rayon::iter::*;
+mod cli_args_parse;
+use cli_args_parse::*;
 
 fn main() {
     //parse config
     let dir = curr_dir();
     let config_file = file_to_iter(parse_text::open(&format!("{dir}/files/config.txt")));
     let settings : Vec<String> = config_file.lines().map(|x| x.unwrap()).collect();
+    println!("{:?}",parse_args());
+    
     //let path = settings[0].clone();
     let percent : f64 = settings[1].clone().parse().unwrap();
     let scheme : Vec<[u8;3]> = hexes_to_scheme(settings[4..].to_vec());
@@ -30,7 +34,7 @@ fn convert(file:&String,scheme: &Vec<[u8;3]>, percent:&f64) {
         for pixel in image.pixels_mut() {
             *pixel = Rgb(pixel_to_scheme(&scheme,&[pixel[0],pixel[1],pixel[2]],*percent))
         }
-        image.save(format!("{}_converted.png",return_file_name(&file))).unwrap();
+        image.save(format!("{}_converted.{}",return_file_name(&file),return_file_ext(file))).unwrap();
 }
 
 fn pixel_to_scheme(scheme:&Vec<[u8;3]>,pixel:&[u8;3],percent:f64) -> [u8;3] {
