@@ -25,3 +25,8 @@ pub fn return_file_name(file:&String) -> String {
     let vec = file.split(".").collect::<Vec<&str>>();
     return vec[0].to_owned()
 }
+
+pub fn return_short_file_name(file:&String) -> String {
+    let mut vec = file.split("/").collect::<Vec<&str>>();
+    return vec.pop().unwrap_or("error in parsing file name").to_owned()
+}

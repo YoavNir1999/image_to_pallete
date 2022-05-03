@@ -8,6 +8,8 @@ use std::io::prelude::*;
 use rayon::iter::*;
 mod cli_args_parse;
 use cli_args_parse::*;
+mod kmeans;
+use kmeans::*;
 
 fn main() {
     //parse config
@@ -16,7 +18,7 @@ fn main() {
     let settings : Vec<String> = config_file.lines().map(|x| x.unwrap()).collect();
     println!("{:?}",parse_args());
     
-    //let path = settings[0].clone();
+    //exctacting settings
     let percent : f64 = settings[1].clone().parse().unwrap();
     let scheme : Vec<[u8;3]> = hexes_to_scheme(settings[4..].to_vec());
     let files = return_files(&format!("{dir}/files/"));
@@ -24,8 +26,15 @@ fn main() {
 
     // convert images in parallel
     files.par_iter().for_each(|x| convert(x,&scheme,&percent));
+
+    println!("{} files were converted",files.len());
     
 }
+
+
+
+
+
 
 fn convert(file:&String,scheme: &Vec<[u8;3]>, percent:&f64) {
     let mut image = image::open(file).unwrap().into_rgb8();
@@ -34,7 +43,9 @@ fn convert(file:&String,scheme: &Vec<[u8;3]>, percent:&f64) {
         for pixel in image.pixels_mut() {
             *pixel = Rgb(pixel_to_scheme(&scheme,&[pixel[0],pixel[1],pixel[2]],*percent))
         }
-        image.save(format!("{}_converted.{}",return_file_name(&file),return_file_ext(file))).unwrap();
+        let file_name = return_file_name(&file);
+        image.save(format!("{}_converted.{}",file_name,return_file_ext(file))).unwrap();
+        println!("{} was converted successfully",return_short_file_name(&file));
 }
 
 fn pixel_to_scheme(scheme:&Vec<[u8;3]>,pixel:&[u8;3],percent:f64) -> [u8;3] {
