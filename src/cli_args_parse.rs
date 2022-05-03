@@ -6,8 +6,6 @@ fn return_args() -> Vec<String> {
 
 pub fn parse_args() -> Operation {
     let args = return_args();
-    let mut percentage = 1.0;
-    let mut scheme = "config.txt".to_owned();
     let args_len = args.len();
     let mut op : Operation = Operation::MatchFromScheme;
 
@@ -21,9 +19,9 @@ pub fn parse_args() -> Operation {
         
         } else if args[idx] == "match-image" {
             if args_len>=idx+2 {
-                op = Operation::Extract(args[idx+1].parse::<usize>().unwrap_or(5))
+                op = Operation::ExtractAndMatch(args[idx+1].parse::<usize>().unwrap_or(5))
             } else {
-                op = Operation::Extract(5)
+                op = Operation::ExtractAndMatch(5)
             }
         }
         
