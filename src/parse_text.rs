@@ -1,6 +1,7 @@
 use std::fs::File;
 use std::path::Path;
 
+//returns a file
 pub fn open(path:&str) -> File {
     let path = Path::new(path);
     let display = path.display();
@@ -12,7 +13,7 @@ pub fn open(path:&str) -> File {
     return file
 }
 
-
+//turns a text file into an iterator of lines
 pub fn file_to_iter(file:File) -> std::io::BufReader<std::fs::File> {
     let reader = std::io::BufReader::new(file);
     return reader

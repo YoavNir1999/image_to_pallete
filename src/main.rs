@@ -12,8 +12,10 @@ mod kmeans;
 use kmeans::*;
 
 fn main() {
-    //parse args
+    // parse args
     let args = parse_args();
+
+    // match args to appropriate function
     match args {
         Operation::Extract(k) => extract_colors(k),
         Operation::ExtractAndMatch(k) => extract_convert(k),
@@ -41,13 +43,16 @@ fn from_scheme() {
 }
 
 fn extract_colors(k:usize) {
+    // gathers files
     let dir = curr_dir();
     let files = return_files(&format!("{dir}/files_for_extraction/"));
     let files : Vec<&String> = files.iter().filter(|x| (return_file_ext(x)=="jpg" || return_file_ext(x)=="png" || return_file_ext(x)=="jpeg")).collect();
+    // extracts colors of all files in parallel
     files.par_iter().for_each(|x| scheme_to_file(x.clone().to_owned(),image_to_hex(x.clone().to_owned(),k)));
 }
 
 fn extract_convert(k:usize) {
+    // gathers files
     let dir = curr_dir();
     let config_file = file_to_iter(parse_text::open(&format!("{dir}/config/config.txt")));
     let settings : Vec<String> = config_file.lines().map(|x| x.unwrap()).collect();
@@ -56,5 +61,8 @@ fn extract_convert(k:usize) {
     let files : Vec<&String> = files.iter().filter(|x| (return_file_ext(x)=="jpg" || return_file_ext(x)=="png" || return_file_ext(x)=="jpeg")).collect();
     let scheme = return_files(&format!("{dir}/files_for_extraction/"));
     let scheme : Vec<&String> = scheme.iter().filter(|x| (return_file_ext(x)=="jpg" || return_file_ext(x)=="png" || return_file_ext(x)=="jpeg")).collect();
-    files.par_iter().for_each(|x| convert(x,&image_to_hex(scheme[0].clone().to_owned(),k),&percent));
+    // extracts colors
+    let colors = image_to_hex(scheme[0].clone().to_owned(),k);
+    // converts files
+    files.par_iter().for_each(|x| convert(x,&colors,&percent));
 }

@@ -1,14 +1,18 @@
 use std::env;
 
+//returns a vector of all passed arguments
 fn return_args() -> Vec<String> {
     return env::args().collect()
 }
 
+//parses the operation from the arguments
 pub fn parse_args() -> Operation {
     let args = return_args();
     let args_len = args.len();
+    // set default operation if no arguments are passed
     let mut op : Operation = Operation::MatchFromScheme;
 
+    //matching the arguments to determine the operation and the k
     for idx in 1..args_len {
         if args[idx] == "extract" {
             if args_len>=idx+2 {
