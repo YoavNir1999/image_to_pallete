@@ -1,4 +1,6 @@
 use hex::encode;
+use image::*;
+use crate::dir::{return_short_file_name};
 
 
 #[derive(Copy,Clone,Debug)]
@@ -93,7 +95,7 @@ pub fn rgb_to_hex(point:&[u8]) -> String {
     return format!("#{}",encode(point))
 }
 
-pub fn rgb_to_image(colors:Vec<[u8;3]>) {
+pub fn rgb_to_image(colors:&Vec<[u8;3]>,file_name:String) {
     let mut buffer : image::RgbImage = image::ImageBuffer::new(colors.len() as u32 * 100,500);
     let mut inc = 0;
     for idx in 0..colors.len() {
@@ -104,5 +106,41 @@ pub fn rgb_to_image(colors:Vec<[u8;3]>) {
         }
         inc+=100;
     }
-    buffer.save("colors.jpg").unwrap()
+    buffer.save(&format!("files_for_extraction/{}_colors.jpg",file_name)).unwrap()
+}
+
+pub fn image_to_hex(path:String,k:usize) -> Vec<[u8;3]>{ 
+    let img = image::open(&path).unwrap();
+    let pixels = img.pixels();
+
+    let mut data1 : Vec<Point> = Vec::new();
+    for pixel in pixels.map(|i| (i.2)) {
+        data1.push(Point {
+            r : pixel[0] as f64,
+            g : pixel[1] as f64,
+            b : pixel[2] as f64
+        })
+    }
+
+    let mut kmeans = Kmeans::new(data1,k);
+    //println!("{:?}",kmeans.means);
+
+    for _i in 0..18 {
+        let diff = kmeans.new_means();
+        //println!("{}",diff);
+        if diff < 20.0 {
+            break
+        }
+    }
+
+    let mut colors = Vec::new();
+
+    for mean in kmeans.means {
+        colors.push(mean.point_to_pixel());
+        //println!("{}",rgb_to_hex(&mean.point_to_pixel()));
+    };
+
+    rgb_to_image(&colors,return_short_file_name(&path));
+
+    return colors
 }
