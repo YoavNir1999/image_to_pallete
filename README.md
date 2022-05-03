@@ -16,20 +16,34 @@ k_value is the number of colors it will try to extract, default is 5 if no k is 
 
 ## color scheme extraction examples:
 original:
+
 ![Alt text](/examples/extraction/image1.jpeg?raw=true "source image")
+
 extracted scheme:
+
 ![Alt text](/examples/extraction/scheme1.jpeg?raw=true "output scheme")
+
 original:
+
 ![Alt text](/examples/extraction/image2.jpeg?raw=true "source image")
+
 extracted scheme:
+
 ![Alt text](/examples/extraction/scheme2.jpeg?raw=true "output scheme")
 
 ## color scheme conversion examples:
 original:
+
 ![Alt text](/examples/conversion/image3.jpeg?raw=true "source image")
+
 conversion to nord scheme:
+
 ![Alt text](/examples/conversion/conversion3.jpeg?raw=true "output image with nord colors")
+
 original:
+
 ![Alt text](/examples/conversion/image4.jpeg?raw=true "source image")
+
 conversion to nord scheme:
+
 ![Alt text](/examples/conversion/conversion4.jpeg?raw=true "output image with nord colors")
