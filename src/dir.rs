@@ -41,5 +41,5 @@ pub fn scheme_to_file(name:String,scheme:Vec<[u8;3]>) {
         content += &format!("{}\n",rgb_to_hex(&color))
     }
     f.write_all(content.as_bytes()).unwrap();
-    println!("success converting {}",return_short_file_name(&name));
+    println!("success extracting from {}",return_short_file_name(&name));
 }

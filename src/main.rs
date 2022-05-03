@@ -44,14 +44,17 @@ fn extract_colors() {
     let dir = curr_dir();
     let files = return_files(&format!("{dir}/files_for_extraction/"));
     let files : Vec<&String> = files.iter().filter(|x| (return_file_ext(x)=="jpg" || return_file_ext(x)=="png" || return_file_ext(x)=="jpeg")).collect();
-    files.par_iter().for_each(|x| scheme_to_file(x.clone().to_owned(),image_to_hex(x.clone().to_owned(),5)));
+    files.par_iter().for_each(|x| scheme_to_file(x.clone().to_owned(),image_to_hex(x.clone().to_owned(),8)));
 }
 
 fn extract_convert() {
     let dir = curr_dir();
-    let files = return_files(&format!("{dir}/files/"));
+    let config_file = file_to_iter(parse_text::open(&format!("{dir}/config/config.txt")));
+    let settings : Vec<String> = config_file.lines().map(|x| x.unwrap()).collect();
+    let percent : f64 = settings[1].clone().parse().unwrap();
+    let files = return_files(&format!("{dir}/files_for_conversion/"));
     let files : Vec<&String> = files.iter().filter(|x| (return_file_ext(x)=="jpg" || return_file_ext(x)=="png" || return_file_ext(x)=="jpeg")).collect();
     let scheme = return_files(&format!("{dir}/files_for_extraction/"));
-    let scheme : Vec<&String> = files.iter().filter(|x| (return_file_ext(x)=="jpg" || return_file_ext(x)=="png" || return_file_ext(x)=="jpeg")).map(|x| *x).collect();
-    
+    let scheme : Vec<&String> = scheme.iter().filter(|x| (return_file_ext(x)=="jpg" || return_file_ext(x)=="png" || return_file_ext(x)=="jpeg")).collect();
+    files.par_iter().for_each(|x| convert(x,&image_to_hex(scheme[0].clone().to_owned(),8),&percent));
 }
