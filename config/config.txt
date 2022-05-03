@@ -1,7 +1,7 @@
 percent:
 1.0
 
-scheme:
+scheme: #default scheme is nord
 #2e3440
 #3b4252
 #434c5e
