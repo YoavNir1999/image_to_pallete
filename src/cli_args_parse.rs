@@ -4,7 +4,7 @@ fn return_args() -> Vec<String> {
     return env::args().collect()
 }
 
-pub fn parse_args() -> (String,f64,Operation) {
+pub fn parse_args() -> Operation {
     let args = return_args();
     let mut percentage = 1.0;
     let mut scheme = "config.txt".to_owned();
@@ -13,43 +13,28 @@ pub fn parse_args() -> (String,f64,Operation) {
 
     for idx in 1..args_len {
         if args[idx] == "extract" {
-             op = Operation::Extract
+            if args_len>=idx+2 {
+                op = Operation::Extract(args[idx+1].parse::<usize>().unwrap_or(5))
+            } else {
+                op = Operation::Extract(5)
+            }
+        
         } else if args[idx] == "match-image" {
-            op = Operation::ExtractAndMatch
+            if args_len>=idx+2 {
+                op = Operation::Extract(args[idx+1].parse::<usize>().unwrap_or(5))
+            } else {
+                op = Operation::Extract(5)
+            }
         }
         
     }
 
-    if args_len>1 {
-        if args[1].contains(".txt") {
-            scheme = args[1].clone();
-        } else {
-            if args_len>2 {
-                    if args[2].contains(".txt") {
-                        scheme = args[2].clone()
-                    }
-            }
-        }
-        if args_len > 2 {
-            match (args[1].parse::<f64>(),args[2].parse::<f64>()) {
-                (Ok(perc),_) => percentage=perc,
-                (_,Ok(perc)) => percentage=perc,
-                _ => {},
-            }
-        } else {
-            match args[1].parse::<f64>() {
-                Ok(perc) => percentage=perc,
-                _ => {},
-            }
-        }
-    }
-
-    return (scheme,percentage,op)
+    return op
 }
 
 #[derive(Debug)]
 pub enum Operation {
-    Extract,
-    ExtractAndMatch,
+    Extract(usize),
+    ExtractAndMatch(usize),
     MatchFromScheme
 }

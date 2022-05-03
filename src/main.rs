@@ -14,10 +14,9 @@ use kmeans::*;
 fn main() {
     //parse args
     let args = parse_args();
-    let k = 8;
-    match args.2 {
-        Operation::Extract => extract_colors(k),
-        Operation::ExtractAndMatch => extract_convert(k),
+    match args {
+        Operation::Extract(k) => extract_colors(k),
+        Operation::ExtractAndMatch(k) => extract_convert(k),
         Operation::MatchFromScheme => from_scheme()
     }
     
