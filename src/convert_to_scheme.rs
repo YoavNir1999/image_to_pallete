@@ -49,4 +49,3 @@ pub fn average(pixel1:&[u8;3],pixel2:&[u8;3],percent:f64) -> [u8;3] {
             (pixel1[1] as f64 * percent+pixel2[1] as f64 * (1.0-percent)) as u8,
             (pixel1[2] as f64 * percent+pixel2[2] as f64 * (1.0-percent)) as u8]
 }
-
