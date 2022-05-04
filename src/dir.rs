@@ -41,7 +41,7 @@ pub fn return_short_file_name(file:&String) -> String {
 
 // takes a color scheme as a vector of rgb and creates a text file containg the colors in hex
 pub fn scheme_to_file(name:String,scheme:Vec<[u8;3]>) {
-    let mut f = File::create(format!("{}.txt",name)).unwrap();
+    let mut f = File::create(format!("{}.txt",return_file_name(&name))).unwrap();
     let mut content = String::new();
     for color in scheme {
         content += &format!("{}\n",rgb_to_hex(&color))
